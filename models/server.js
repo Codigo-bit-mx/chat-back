@@ -13,7 +13,7 @@ class Server {
         this.app = express();
         this.port = process.env.PORT;
         this.authPath = '/api/login';
-        this.mensajePath = '/api';
+        this.mensajePath = '/api/mensajes';
         this.server = http.createServer( this.app );
         this.io = socketIO(this.server, { /*configuraciones*/});
         this.conectarBD();

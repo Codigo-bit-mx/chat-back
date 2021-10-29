@@ -1,21 +1,20 @@
 const { request, response } = require('express');
 const Usuario               = require ('../../models/usuarioModel');
 const bycript               = require('bcryptjs');
-const generacionJWT         = require('../../helpers/generacion-jwt');
+const {generacionJWT}        = require('../../helpers/generacion-jwt');
 const cloudinary            = require('cloudinary').v2;
 cloudinary.config(process.env.CLOUDINARY_URL);
 
 const newUser = async(req, res=response) => {
 
-    const {nombre, email, password} = req.body;
+   const {nombre, email, password} = req.body;
     
    try {
-
     const existeEmail = await Usuario.findOne({email});
     if(existeEmail) {
         res.status(400).json({
             ok: false,
-            msg: 'Error Email encontado'
+            msg: 'Error este email ya fue registrado'
         });
     };
  
@@ -34,7 +33,6 @@ const newUser = async(req, res=response) => {
         token,
         usuario
     });
-
     } catch (error) {
     res.status(500).json({
         ok: false,
@@ -70,7 +68,7 @@ const login = async(req = request, res = response) => {
         })
 
     } catch (error) {
-        res.status(400).json({msg: 'error'})
+        res.status(400).json({msg: 'Error de autenticación'})
     }
 }
 
@@ -92,7 +90,6 @@ const reNewToken = async (req, res = response) => {
             msg: "error"
         })
     }
-
 }
 
 const editUser = async (req, res = response) => {
@@ -118,7 +115,7 @@ const editUser = async (req, res = response) => {
             datos.password = bycript.hashSync(password, salt); 
              await Usuario.findByIdAndUpdate( id, datos );
             res.status(200).json({
-                msg: "Actualizacion correcta CON PASSWORD EN EL JSON"
+                msg: "Actualizacion correcta"
             });
             
         } else {
@@ -128,10 +125,9 @@ const editUser = async (req, res = response) => {
             }
             await Usuario.findByIdAndUpdate( id, datos );
             res.status(200).json({
-                msg: "Actualizacion correcta SIN PASSWORD EN EL JSON"
+                msg: "Actualizacion correcta"
             });
         }
-
        } catch(error) {
         res.status(400).json({
             msg: "Ocurrio un error"
@@ -142,10 +138,11 @@ const editUser = async (req, res = response) => {
  
  const editIMG = async( req, res = response ) => {
     
-    const id = req.params;
+    const { id } = req.params;
     const { archivo } = req.files;
-    
+
    try {
+
      //validacion de extenciones
      const extencionesValidas = ['jpg', 'jpeg', 'png'];
      const nombreCortado = archivo.name.split('.');
@@ -155,9 +152,9 @@ const editUser = async (req, res = response) => {
              msg: "La imagen no es del formato adecuado"
          })
      }
-     const {secure_url} = await cloudinary.uploader.upload(archivo.tempFilePath, { folder: "/chat" });
-     await Usuario.findOneAndUpdate(id, {img: secure_url});
-         
+     const { secure_url } = await cloudinary.uploader.upload(archivo.tempFilePath, { folder: "/chat" });
+     await Usuario.findByIdAndUpdate(id, {img: secure_url});
+
       res.status(200).json({
         msg: 'La imagem se actualizo con exito'
       });   

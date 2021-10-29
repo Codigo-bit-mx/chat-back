@@ -14,6 +14,13 @@ const MensajeSchema = Schema ({
     mensaje: {
         type: String,
         require: true
+    },
+    nombre: {
+        type: String,
+        require: true
+    },
+    img: {
+        type: String
     }
 },
 {

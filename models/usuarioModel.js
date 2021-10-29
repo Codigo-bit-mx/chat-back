@@ -15,7 +15,8 @@ const UsuarioSchema = Schema({
         required: [true, 'La contraseña es obligatoria']
     },
     img: {
-        type: String
+        type: String,
+        default: '/usuario.jpg'
     },
     online: {
         type: Boolean,

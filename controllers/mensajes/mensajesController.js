@@ -3,7 +3,7 @@ const Mensaje             = require('../../models/mensajeModelo');
 
 
 const obtenerMensajes = async ( req = request, res = response ) => {
-    
+  
     const MiId = req.usuario;
     const mensajesDe = req.params.de;
     
@@ -13,7 +13,7 @@ const obtenerMensajes = async ( req = request, res = response ) => {
             { de: mensajesDe, para: MiId},
         ]
     })
-    .sort({ createdAt: 'desc'})
+    .sort({ createdAt: 'asc'})
     .limit(30);
 
     res.json({
